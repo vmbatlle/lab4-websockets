@@ -62,7 +62,7 @@ public class ElizaServerTest {
 		ClientEndpointConfig configuration = ClientEndpointConfig.Builder.create().build();
 		ClientManager client = ClientManager.createClient();
 		Session session = client.connectToServer(new ElizaEndpointToComplete(list,latch), configuration, new URI("ws://localhost:8025/websockets/eliza"));
-		session.getAsyncRemote().sendText("always");
+		session.getAsyncRemote().sendText("hi");
 		latch.await();
 		assertEquals("The doctor is in.", list.get(0));
 	}
