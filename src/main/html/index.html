@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Eliza client</title>
+</head>
+<body>
+    <div>
+        <h1>Eliza web client</h1>
+        <div id="status">Waiting for connection</div>
+    </div>
+    <div>
+        <h2>Your message</h2>
+        <form onsubmit="return false">
+            <input id="text-input">
+            <button id="send-button">Send</button>
+        </form>
+    </div>
+    <div>
+        <h2>Doctor's response</h2>
+        <div id="response"></div>
+    </div>
+    <div>
+        <h2>Chat history</h2>
+        <ul id="chat">
+        </ul>
+    </div>
+
+    <script type = "text/javascript">
+        if ("WebSocket" in window) {
+            var ws = new WebSocket("ws://localhost:8025/websockets/eliza");
+
+            var textUser = document.getElementById("text-input");
+            var submitMsg = document.getElementById("send-button");
+            var chatHistory = document.getElementById("chat");
+            var textDoctor = document.getElementById("response");
+
+            ws.onopen = function() {
+                console.log("Connection established");
+                var label = document.getElementById("status");
+                label.innerHTML = "Connection established";
+            };
+
+            ws.onmessage = function (evt) {
+                var received_msg = evt.data;
+                console.log("Message received: " + received_msg);
+
+                if (received_msg !== "---") {
+                    textDoctor.innerHTML = textDoctor.innerHTML + " " + received_msg;
+
+                    var li = document.createElement('li');
+                    li.setAttribute('class','item');
+                    chatHistory.appendChild(li);
+                    li.innerHTML=li.innerHTML + "DOCTOR: " + received_msg;
+                }
+            };
+
+            ws.onclose = function() {
+                console.log("Connection closed");
+                var label = document.getElementById("status");
+                label.innerHTML = "Connection closed";
+            };
+
+            submitMsg.onclick = function ( ) {
+                var sent_msg = textUser.value
+                textUser.value = ""
+                textDoctor.innerHTML = null
+                console.log("Sending message " + sent_msg)
+                var li = document.createElement('li');
+                li.setAttribute('class','item');
+
+                chatHistory.appendChild(li);
+
+                li.innerHTML=li.innerHTML + "YOU: " + sent_msg;
+                ws.send(sent_msg);
+            }
+        } else {
+            alert("WebSocket NOT supported by your Browser!");
+        }
+    </script>
+</body>
+</html>
