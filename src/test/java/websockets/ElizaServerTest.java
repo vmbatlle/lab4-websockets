@@ -51,7 +51,7 @@ public class ElizaServerTest {
         session.getAsyncRemote().sendText("bye");
         latch.await();
 		assertEquals(3, list.size());
-		assertEquals("The doctor is in.", list.get(0));
+		assertEquals("DOCTOR: What's your name?", list.get(1));
 	}
 
 	@Test(timeout = 1000)
@@ -64,10 +64,11 @@ public class ElizaServerTest {
 			new ElizaEndpointToComplete(list, latch), 
 			configuration,
 			new URI("ws://localhost:8025/websockets/eliza"));
+		session.getAsyncRemote().sendText("Maria");
 		session.getAsyncRemote().sendText("Nice to meet you");
 		latch.await();
 		assertEquals(4, list.size());
-		assertEquals("We were discussing you, not me.", list.get(3));
+		assertEquals("DOCTOR: MARIA, We were discussing you, not me.", list.get(3));
 	}
 
 	@After

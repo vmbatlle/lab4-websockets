@@ -17,7 +17,7 @@
         </form>
     </div>
     <div>
-        <h2>Doctor's response</h2>
+        <h2>Doctor's last response to you</h2>
         <div id="response"></div>
     </div>
     <div>
@@ -34,6 +34,7 @@
             var submitMsg = document.getElementById("send-button");
             var chatHistory = document.getElementById("chat");
             var textDoctor = document.getElementById("response");
+            var myName = "";
 
             ws.onopen = function() {
                 console.log("Connection established");
@@ -46,12 +47,14 @@
                 console.log("Message received: " + received_msg);
 
                 if (received_msg !== "---") {
-                    textDoctor.innerHTML = textDoctor.innerHTML + " " + received_msg;
-
+                		if (myName === "" && received_msg.includes("DOCTOR: ") 
+                		        || myName !== "" && received_msg.includes("DOCTOR: " + myName + ",")) {
+                        textDoctor.innerHTML = textDoctor.innerHTML + "\n" + received_msg;
+                    }
                     var li = document.createElement('li');
                     li.setAttribute('class','item');
                     chatHistory.appendChild(li);
-                    li.innerHTML=li.innerHTML + "DOCTOR: " + received_msg;
+                    li.innerHTML=li.innerHTML + received_msg;
                 }
             };
 
@@ -63,6 +66,9 @@
 
             submitMsg.onclick = function ( ) {
                 var sent_msg = textUser.value
+                if (myName === "") {
+                    myName = sent_msg.split(" ", 2)[0].toUpperCase();
+                }
                 textUser.value = ""
                 textDoctor.innerHTML = null
                 console.log("Sending message " + sent_msg)
