@@ -28,7 +28,13 @@
 
     <script type = "text/javascript">
         if ("WebSocket" in window) {
-            var ws = new WebSocket("ws://localhost:8025/websockets/eliza");
+            function url(s) {
+                var l = window.location;
+                return ((l.protocol === "https:") ? "wss://" : "ws://") +
+                    l.hostname + (((l.port !== "80") && (l.port !== "443")) ? ":" + l.port : "") +
+                    l.pathname + s;
+            }
+            var ws = new WebSocket(url("websockets/eliza"));
 
             var textUser = document.getElementById("text-input");
             var submitMsg = document.getElementById("send-button");
