@@ -18,7 +18,7 @@ public class ElizaServer {
 
   private static void runServer() {
     final HashMap<String, Object> properties = new HashMap<String, Object>();
-    properties.put(Server.STATIC_CONTENT_ROOT, "src/main/html");
+    properties.put(Server.STATIC_CONTENT_ROOT, "./src/main/webapp");
     Server server = new Server("localhost", 8025, "/websockets", properties,
             ElizaServerEndpoint.class);
 
