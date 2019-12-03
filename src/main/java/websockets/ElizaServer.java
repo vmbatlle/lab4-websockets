@@ -17,7 +17,9 @@ public class ElizaServer {
   }
 
   private static void runServer() {
-    Server server = new Server("localhost", 8025, "/websockets", new HashMap<>(),
+    final HashMap<String, Object> properties = new HashMap<String, Object>();
+    properties.put(Server.STATIC_CONTENT_ROOT, "./src/main/webapp");
+    Server server = new Server("localhost", 8025, "/websockets", properties,
             ElizaServerEndpoint.class);
 
     try (Scanner s = new Scanner(System.in)) {
